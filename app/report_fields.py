@@ -1,0 +1,31 @@
+REPORT_FIELDS = {
+    'adv_views': {'display_text': 'Просмотры (внутр. траф.)'},
+    'adv_clicks': {'display_text': 'Клики (внутр. траф.)'},
+    'adv_atbs': {'display_text': 'Корзины (внутр. траф.)'},
+    'adv_orders': {'display_text': 'Заказы (внутр. траф.)'},
+    'adv_shks': {'display_text': 'Товара в заказах (внутр. траф.)'},
+    'adv_sum': {'display_text': 'Затраты (внутр. траф.)'},
+    'adv_sum_price': {'display_text': 'Заказов на сумму (внутр. траф.)'},
+
+    'card_clicks': {'display_text': 'Клики (карточка)'},
+    'card_atbs': {'display_text': 'Корзины (карточка)'},
+    'card_shks': {'display_text': 'Товара в заказах (карточка)'},
+    'card_sum_price': {'display_text': 'Заказов на сумму (карточка)'},
+    'buyouts_count': {'display_text': 'Количество выкупов'},
+    'buyouts_sum': {'display_text': 'Выкупили на сумму'},
+    'stock_mp': {'display_text': 'Остаток на складах продавца'},
+    'stock_wb': {'display_text': 'Остаток на складах WB'},
+
+    'deliveryRub': {'display_text': 'Услуги по доставке товара покупателю'},
+    'penalty': {'display_text': 'Общая сумма штрафов'},
+    'storageFee': {'display_text': 'Затраты на хранение'},
+    'returnAmount': {'display_text': 'Количество возвратов'},
+    'commissionPercent': {'display_text': 'Размер кВВ, %'},
+
+    'acquiringFee': {'display_text': 'Эквайринг/Комиссии за организацию платежей'},
+    'forPay': {'display_text': 'К перечислению Продавцу за реализованный Товар'},
+    'ppvzKvwPrcBase': {'display_text': 'Размер кВВ без НДС, % Базовый'},
+    'ppvzVwNds': {'display_text': 'НДС с Вознаграждения Вайлдберриз'},
+    'ppvzReward': {'display_text': 'Возмещение за выдачу и возврат товаров на ПВЗ'},
+    'ppvzKvwPrc': {'display_text': 'Итоговый кВВ без НДС, %'},
+}
