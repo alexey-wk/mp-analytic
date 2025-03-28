@@ -38,24 +38,9 @@ class FinReportFormatter:
         ids = [report['id'] for report in finrepsorts]
         return ids
 
-    def merge_records_by_srid(self, raw_finrep_records):
-        finrep_records_merged = {}
+    def extract_nm_stats_from_finrep_records(self, raw_finrep_records):
+        finrep_records = self._merge_records_by_srid(raw_finrep_records)
 
-        for record in raw_finrep_records:
-            srid = record['srid']
-            if srid not in finrep_records_merged:
-                finrep_records_merged[srid] = record.copy()
-            else:
-                for field_name, value in record.items():
-                    if field_name in finrep_records_merged[srid]:
-                        finrep_records_merged[srid][field_name] = finrep_records_merged[srid][field_name] or value
-                    else:
-                        finrep_records_merged[srid][field_name] = value
-
-        finrep_records = list(finrep_records_merged.values())
-        return finrep_records
-
-    def extract_nm_stats_from_finrep_records(self, finrep_records):
         nm_finrep_stats = {}
 
         for record in finrep_records:
@@ -78,3 +63,20 @@ class FinReportFormatter:
             nm_finrep_stats[id]['nmId'] = id
 
         return nm_finrep_stats
+
+    def _merge_records_by_srid(self, raw_finrep_records):
+        finrep_records_merged = {}
+
+        for record in raw_finrep_records:
+            srid = record['srid']
+            if srid not in finrep_records_merged:
+                finrep_records_merged[srid] = record.copy()
+            else:
+                for field_name, value in record.items():
+                    if field_name in finrep_records_merged[srid]:
+                        finrep_records_merged[srid][field_name] = finrep_records_merged[srid][field_name] or value
+                    else:
+                        finrep_records_merged[srid][field_name] = value
+
+        finrep_records = list(finrep_records_merged.values())
+        return finrep_records

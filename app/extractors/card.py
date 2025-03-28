@@ -14,7 +14,7 @@ BUYOUT_EXTRACT_FIELDS = ['buyouts_count', 'buyouts_sum']
 STOCK_EXTRACT_FIELDS = ['stock_mp', 'stock_wb']
 
 class CardFormatter:
-    def extract_nm_statS_from_cards(self, cards):
+    def extract_nm_stats_from_cards(self, cards):
         nm_stat = {}
 
         for card in cards:

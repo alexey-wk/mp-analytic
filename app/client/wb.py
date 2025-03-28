@@ -82,7 +82,13 @@ class WBClient:
             })
 
         res = requests.post(adv_stats_url, headers=self.headers, json=params)
-        return res.json()
+        res = res.json()
+        
+        if 'error' in res and 'there are no companies with correct intervals' in res['error']:
+            print(f'в указанный период не было рекламных кампаний')
+            return []
+        else:
+            return res
 
     def get_finreports(self, report_date: datetime):
         dot_report_date = self._get_dot_report_date(report_date)
@@ -95,7 +101,7 @@ class WBClient:
                            params=params, cookies=self.cookies)
         return res.json()['data']['reports']
 
-    def get_finreport_stat(self, report_id: int):
+    def get_finreport_stat_records(self, report_id: int):
         url = finreport_stat_url.format(report_id=report_id)
         res = requests.get(url, headers=self.headers, cookies=self.cookies)
         return res.json()['data']['details']

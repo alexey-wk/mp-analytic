@@ -14,3 +14,9 @@ class ReportConstructor:
         df = df.rename(columns={'index': 'Метрики'})
 
         return df
+
+    def generate_rnp_source(self, stats):
+        df = pd.DataFrame(stats)
+        df = df.abs()
+
+        return df
