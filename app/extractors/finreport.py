@@ -1,20 +1,21 @@
-asis_fields = set(['nomenclatureId', 'nds', 'srid'])
-sum_fields = set([
+ASIS_FIELDS = set([
+    'nomenclatureId', 
+    'nds', 
+    'srid'
+])
+SUM_FIELDS = set([
     'deliveryRub',               # Услуги по доставке товара покупателю Пример: 417.18
     'penalty',                   # Общая сумма штрафов
     'storageFee',                # Хранение Пример: 487.81
     'returnAmount',              # Количество возвратов Пример: 1
 
-    # потенциально полезные поля
     'acquiringFee',              # Эквайринг/Комиссии за организацию платежей Пример: 35.55
     'ppvzVwNds',                 # НДС с Вознаграждения Вайлдберриз Пример: -26.28
-    # Вознаграждение с продаж до вычета услуг поверенного, без НДС Пример: -145.58
-    'ppvzSalesCommission'
-    # К перечислению Продавцу за реализованный Товар Пример: 1821.47
-    'forPay',
+    'ppvzSalesCommission',       # Вознаграждение с продаж до вычета услуг поверенного, без НДС Пример: -145.58
+    'forPay',                    # К перечислению Продавцу за реализованный Товар Пример: 1821.47
     'ppvzReward',                # Возмещение за выдачу и возврат товаров на ПВЗ Пример: 46.996
 ])
-avg_fields = set([
+AVG_FIELDS = set([
     'commissionPercent',          # Размер кВВ, % Пример: 16.5
     'ppvzKvwPrcBase',             # Размер  кВВ без НДС, % Базовый Пример:  0.1375
     'ppvzKvwPrc'                  # Итоговый кВВ без НДС, % Пример: -0.0458
@@ -52,9 +53,9 @@ class FinReportFormatter:
                 nm_finrep_stats[id] = record.copy()
             else:
                 for field_name, val in record.items():
-                    if field_name in sum_fields:
+                    if field_name in SUM_FIELDS:
                         nm_finrep_stats[id][field_name] += val
-                    elif field_name in avg_fields:
+                    elif field_name in AVG_FIELDS:
                         nm_finrep_stats[id][field_name] = (
                             nm_finrep_stats[id][field_name] + val) / 2
                     else:
@@ -78,5 +79,4 @@ class FinReportFormatter:
                     else:
                         finrep_records_merged[srid][field_name] = value
 
-        finrep_records = list(finrep_records_merged.values())
-        return finrep_records
+        return list(finrep_records_merged.values())
