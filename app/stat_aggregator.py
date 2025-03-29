@@ -25,7 +25,7 @@ finrep_metrics = [
 
 class StatAggregator:
     def combine_stats(self, adv_stats, card_stats, finrep_stats):
-        self._log_nm_ids(adv_stats, card_stats, finrep_stats)
+        #self._log_nm_ids(adv_stats, card_stats, finrep_stats)
 
         all_nm_ids = list(set(
             list(adv_stats.keys()) +

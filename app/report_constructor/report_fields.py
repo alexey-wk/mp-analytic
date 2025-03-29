@@ -108,3 +108,7 @@ REPORT_FIELDS = {
 }
 
 REPORT_FIELDS_ITEMS = REPORT_FIELDS.items()
+
+TAG_TO_FIELD_NAME = {
+    val['tag']: key for key, val in REPORT_FIELDS_ITEMS
+}

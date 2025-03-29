@@ -58,3 +58,8 @@ class GoogleSheetsClient:
         
         # Update the specified cell in the target row
         worksheet.update_cell(target_row_index, col_to_update, value)
+
+    def get_worksheet(self, spreadsheet_name: str, worksheet_name: str):
+        client = gspread.authorize(self.creds)
+        spreadsheet = client.open(spreadsheet_name)
+        return spreadsheet.worksheet(worksheet_name)

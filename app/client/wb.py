@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+from app.date_formatter import DateFormatter
 
 cards_url = 'https://content-api.wildberries.ru/content/v2/get/cards/list'
 cards_params = {'settings': {
@@ -32,7 +33,7 @@ class WBClient:
 
     def get_cards_stats(self, nm_ids: list[int], report_date: datetime):
 
-        dash_report_date = self._get_dash_report_date(report_date)
+        dash_report_date = DateFormatter.get_dash_report_date(report_date)
         cards_stat_period = {
             'begin': f'{dash_report_date} {DAY_START_TIME}',
             'end': f'{dash_report_date} {DAY_END_TIME}'
@@ -67,7 +68,7 @@ class WBClient:
         return adv_auto, adv_auction
 
     def get_adverts_stats(self, adv_ids: list[int], report_date: datetime):
-        dash_report_date = self._get_dash_report_date(report_date)
+        dash_report_date = DateFormatter.get_dash_report_date(report_date)
         params = []
 
         adv_stat_interval = {
@@ -91,7 +92,7 @@ class WBClient:
             return res
 
     def get_finreports(self, report_date: datetime):
-        dot_report_date = self._get_dot_report_date(report_date)
+        dot_report_date = DateFormatter.get_dot_report_date(report_date)
         params = {
             'dateFrom': dot_report_date,
             'dateTo': dot_report_date
@@ -105,9 +106,3 @@ class WBClient:
         url = finreport_stat_url.format(report_id=report_id)
         res = requests.get(url, headers=self.headers, cookies=self.cookies)
         return res.json()['data']['details']
-
-    def _get_dash_report_date(self, report_date: datetime):
-        return report_date.strftime('%Y-%m-%d')
-
-    def _get_dot_report_date(self, report_date: datetime):
-        return report_date.strftime('%d.%m.%Y')
