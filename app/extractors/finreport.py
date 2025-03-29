@@ -8,6 +8,8 @@ SUM_FIELDS = set([
     'penalty',                   # Общая сумма штрафов
     'storageFee',                # Хранение Пример: 487.81
     'returnAmount',              # Количество возвратов Пример: 1
+    'acceptance',                # Стоимость платной приемки Пример: 0
+    'deduction',                 # Прочие удержания/выплаты Пример: 0
 
     'acquiringFee',              # Эквайринг/Комиссии за организацию платежей Пример: 35.55
     'ppvzVwNds',                 # НДС с Вознаграждения Вайлдберриз Пример: -26.28
@@ -23,7 +25,7 @@ AVG_FIELDS = set([
 
 # также доступны для извлечения поля: salePercent, supplierSpp, costAmount, customerReward, costPrice,
 # productDiscountForReport, supplierPromo, retailCommission, forPayNds,
-# deduction, acceptance, is_kgvp_v2, additionalPayment, dlvPrc, rebillLogisticCost
+# is_kgvp_v2, additionalPayment, dlvPrc, rebillLogisticCost
 # ppvzForPay, goodsIncomeID, currency
 # acquiringPercent          # Размер комиссии за эквайринг/Комиссии за организацию платежей, % Пример: 1.7
 # deliveryAmount            # Количество доставок Пример: 1

@@ -3,13 +3,14 @@ CARD_FIELDS_MAP = {
     'clicks': 'openCardCount',
     'atbs': 'addToCartCount',
     'shks': 'ordersCount',
+    'orders': 'avgOrdersCountPerDay',
     'sum_price': 'ordersSumRub',
     'buyouts_count': 'buyoutsCount',
     'buyouts_sum': 'buyoutsSumRub',
     'stock_mp': 'stocksMp',
     'stock_wb': 'stocksWb',
 }
-CARD_TRAFFIC_EXTRACT_FIELDS = ['clicks', 'atbs', 'shks', 'sum_price']
+CARD_TRAFFIC_EXTRACT_FIELDS = ['clicks', 'atbs', 'shks', 'orders', 'sum_price']
 BUYOUT_EXTRACT_FIELDS = ['buyouts_count', 'buyouts_sum']
 STOCK_EXTRACT_FIELDS = ['stock_mp', 'stock_wb']
 

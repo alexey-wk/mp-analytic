@@ -40,6 +40,10 @@ REPORT_FIELDS = {
         'display_text': 'Товара в заказах (карточка)',
         'tag': 'card_shks'
     },
+    'card_orders': {
+        'display_text': 'Заказов (карточка)',
+        'tag': 'card_orders'
+    },
     'card_sum_price': {
         'display_text': 'Заказов на сумму (карточка)',
         'tag': 'card_sum_price'
@@ -79,6 +83,14 @@ REPORT_FIELDS = {
     'commissionPercent': {
         'display_text': 'Размер кВВ, %',
         'tag': 'commission_percent'
+    },
+    'acceptance': {
+        'display_text': 'Стоимость платной приемки',
+        'tag': 'acceptance_fee'
+    },
+    'deduction': {
+        'display_text': 'Прочие удержания/выплаты',
+        'tag': 'deduction_fee'
     },
 
     'acquiringFee': {
