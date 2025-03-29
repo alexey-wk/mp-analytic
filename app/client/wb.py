@@ -56,14 +56,16 @@ class WBClient:
         try:
             adv_auto = res_auto.json()
         except:
-            print('нет авто кампаний')
+            # print('нет авто кампаний')
+            pass
 
         res_auction = requests.post(
             adv_url, headers=self.headers, params=adv_auction_parms)
         try:
             adv_auction = res_auction.json()
         except:
-            print('нет аукционных кампаний')
+            # print('нет аукционных кампаний')
+            pass
 
         return adv_auto, adv_auction
 
@@ -86,7 +88,7 @@ class WBClient:
         res = res.json()
         
         if 'error' in res and 'there are no companies with correct intervals' in res['error']:
-            print(f'в указанный период не было рекламных кампаний')
+            # print(f'в указанный период не было рекламных кампаний')
             return []
         else:
             return res
