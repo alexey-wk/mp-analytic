@@ -1,4 +1,5 @@
 import requests
+import logging
 from datetime import datetime
 from app.date_formatter import DateFormatter
 
@@ -23,6 +24,7 @@ DAY_END_TIME = '23:59:59'
 
 class WBClient:
     def __init__(self, cookies: dict, api_token: str):
+        self.logger = logging.getLogger(__name__)
         self.headers = {'Authorization': f'Bearer {api_token}'}
         self.cookies = cookies
 
@@ -32,7 +34,6 @@ class WBClient:
         return cards
 
     def get_cards_stats(self, nm_ids: list[int], report_date: datetime):
-
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
         cards_stat_period = {
             'begin': f'{dash_report_date} {DAY_START_TIME}',
@@ -86,8 +87,8 @@ class WBClient:
 
         res = requests.post(adv_stats_url, headers=self.headers, json=params)
         res = res.json()
-        
-        if 'error' in res and 'there are no companies with correct intervals' in res['error']:
+
+        if not res or 'error' in res and 'there are no companies with correct intervals' in res['error']:
             # print(f'в указанный период не было рекламных кампаний')
             return []
         else:
