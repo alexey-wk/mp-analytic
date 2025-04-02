@@ -7,11 +7,12 @@ CARD_FIELDS_MAP = {
     'sum_price': 'ordersSumRub',
     'buyouts_count': 'buyoutsCount',
     'buyouts_sum': 'buyoutsSumRub',
+    'buyouts_percent': 'buyoutsPercent',
     'stock_mp': 'stocksMp',
     'stock_wb': 'stocksWb',
 }
 CARD_TRAFFIC_EXTRACT_FIELDS = ['clicks', 'atbs', 'shks', 'orders', 'sum_price']
-BUYOUT_EXTRACT_FIELDS = ['buyouts_count', 'buyouts_sum']
+BUYOUT_EXTRACT_FIELDS = ['buyouts_count', 'buyouts_sum', 'buyouts_percent']
 STOCK_EXTRACT_FIELDS = ['stock_mp', 'stock_wb']
 
 class CardFormatter:
@@ -36,6 +37,8 @@ class CardFormatter:
             prefixed_field = CARD_PREFIX + field
             stat[nm_id][prefixed_field] += statistics[CARD_FIELDS_MAP[field]]
         for field in BUYOUT_EXTRACT_FIELDS:
+            if field == 'buyouts_percent':
+                continue
             stat[nm_id][field] += statistics[CARD_FIELDS_MAP[field]]
         for field in STOCK_EXTRACT_FIELDS:
             stat[nm_id][field] += stocks[CARD_FIELDS_MAP[field]]
@@ -47,6 +50,9 @@ class CardFormatter:
             prefixed_field = CARD_PREFIX + field
             stat[nm_id][prefixed_field] = statistics[CARD_FIELDS_MAP[field]]
         for field in BUYOUT_EXTRACT_FIELDS:
-            stat[nm_id][field] = statistics[CARD_FIELDS_MAP[field]]
+            if field == 'buyouts_percent':
+                stat[nm_id][field] = statistics['conversions'][CARD_FIELDS_MAP[field]]
+            else:
+                stat[nm_id][field] = statistics[CARD_FIELDS_MAP[field]]
         for field in STOCK_EXTRACT_FIELDS:
             stat[nm_id][field] = stocks[CARD_FIELDS_MAP[field]]

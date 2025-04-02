@@ -2,7 +2,7 @@ adv_metrics = [
     'adv_views', 'adv_clicks', 'adv_atbs', 'adv_orders', 'adv_shks', 'adv_sum', 'adv_sum_price'
 ]
 card_metrics = ['card_clicks', 'card_atbs', 'card_orders', 'card_shks', 'card_sum_price',
-    'buyouts_count', 'buyouts_sum', 'stock_mp', 'stock_wb'
+    'buyouts_count', 'buyouts_sum', 'buyouts_percent', 'stock_mp', 'stock_wb'
 ]
 card_total_metrics = ['card_clicks', 'card_atbs', 'card_shks', 'card_sum_price']
 finrep_metrics = [

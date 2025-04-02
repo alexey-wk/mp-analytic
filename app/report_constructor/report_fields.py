@@ -56,6 +56,10 @@ REPORT_FIELDS = {
         'display_text': 'Сумма выкупов',
         'tag': 'buyouts_sum'
     },
+    'buyouts_percent': {
+        'display_text': 'Выкупы, %',
+        'tag': 'buyouts_percent'
+    },
     'stock_mp': {
         'display_text': 'Остаток на складах продавца',
         'tag': 'stock_mp'

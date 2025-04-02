@@ -3,9 +3,10 @@ from app.report_constructor.report_fields import REPORT_FIELDS, REPORT_FIELDS_IT
 
 pd.set_option('display.float_format', '{:.2f}'.format)
 
-TAG_COL_IDX = 1
-DATE_ROW_IDX = 0
-NM_ID_ROW_IDX = 2
+TAG_COL_IDX = 0
+DATE_ROW_IDX = 1
+NM_ID_ROW_IDX = 0
+NM_ID_COL_IDX = 2
 DISPLAY_TEXT_MAPPING = {field: info['display_text'] for field, info in REPORT_FIELDS.items()}
 
 class ReportConstructor:
@@ -45,12 +46,12 @@ class ReportConstructor:
     def get_cell_value(self, nm_report, field_name, tag) -> str:
         value = nm_report.loc[field_name]
         if tag.endswith('_percent'):
-            value = str(round(value, 2)) + '%'
+            value = round(value/100, 2)
 
-        return str(value)
+        return value
 
     def get_cell_coords(self, row_idx, col_idx):
         return row_idx + 1, col_idx + 1     
 
     def get_nm_id(self, worksheet_rows):
-        return int(worksheet_rows[NM_ID_ROW_IDX][TAG_COL_IDX])       
+        return int(worksheet_rows[NM_ID_ROW_IDX][NM_ID_COL_IDX])       
