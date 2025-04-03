@@ -30,6 +30,7 @@ class WBClient:
 
     def get_cards(self):
         res = requests.post(cards_url, headers=self.headers, json=cards_params)
+        res.raise_for_status()
         cards = res.json()['cards']
         return cards
 
@@ -47,6 +48,7 @@ class WBClient:
         }
 
         res = requests.post(cards_stats_url, headers=self.headers, json=params)
+        res.raise_for_status()
         return res.json()['data']['cards']
 
     def get_adverts(self):
@@ -54,18 +56,19 @@ class WBClient:
 
         res_auto = requests.post(
             adv_url, headers=self.headers, params=adv_auto_parms)
+        res_auto.raise_for_status()
+        
         try:
             adv_auto = res_auto.json()
         except:
-            # print('нет авто кампаний')
             pass
 
         res_auction = requests.post(
             adv_url, headers=self.headers, params=adv_auction_parms)
+        res_auction.raise_for_status()
         try:
             adv_auction = res_auction.json()
         except:
-            # print('нет аукционных кампаний')
             pass
 
         return adv_auto, adv_auction
@@ -103,9 +106,11 @@ class WBClient:
 
         res = requests.get(finreports_url, headers=self.headers,
                            params=params, cookies=self.cookies)
+        res.raise_for_status()
         return res.json()['data']['reports']
 
     def get_finreport_stat_records(self, report_id: int):
         url = finreport_stat_url.format(report_id=report_id)
         res = requests.get(url, headers=self.headers, cookies=self.cookies)
+        res.raise_for_status()
         return res.json()['data']['details']

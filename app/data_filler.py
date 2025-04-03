@@ -11,6 +11,8 @@ from app.stat_aggregator import StatAggregator
 from app.report_constructor.report_fields import TAG_TO_FIELD_NAME
 from app.report_constructor.report_constructor import ReportConstructor
 from dotenv import load_dotenv
+import gspread
+
 load_dotenv()
 
 API_TOKEN = os.getenv("API_TOKEN")
@@ -34,7 +36,7 @@ finrepFormatter = FinReportFormatter()
 statAggregator = StatAggregator()
 reportConstructor = ReportConstructor()
 
-def fill_sheet_for_date(spreadsheet_name: str, worksheet_name: str, report_date: datetime.datetime):
+def fill_sheet_column(spreadsheet_name: str, worksheet_name: str, report_date: datetime.datetime):
     # Получение выбранного листа таблицы и nm_id
     worksheet = gs_client.get_worksheet(spreadsheet_name, worksheet_name)
     worksheet_rows = worksheet.get_all_values()
@@ -76,6 +78,8 @@ def fill_sheet_for_date(spreadsheet_name: str, worksheet_name: str, report_date:
     date_col_idx = reportConstructor.find_date_col_idx(worksheet_rows, report_dot_date)
     nm_report = reports[nm_id]
 
+    cell_updates = []
+
     for row_tag, row_idx in tag_row_idxs:
         if row_tag not in TAG_TO_FIELD_NAME:
             continue
@@ -84,4 +88,9 @@ def fill_sheet_for_date(spreadsheet_name: str, worksheet_name: str, report_date:
         if field_name in nm_report.index:
             cell_coords = reportConstructor.get_cell_coords(row_idx, date_col_idx)
             cell_value = reportConstructor.get_cell_value(nm_report, field_name, row_tag)
-            worksheet.update_cell(*cell_coords, cell_value)
+
+            cell_updates.append((cell_coords[0], cell_coords[1], cell_value))
+
+    cells = [gspread.Cell(row, col, value) for row, col, value in cell_updates]
+    worksheet.update_cells(cells)
+
