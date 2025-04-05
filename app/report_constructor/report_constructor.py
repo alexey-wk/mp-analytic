@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from app.report_constructor.report_fields import REPORT_FIELDS, REPORT_FIELDS_ITEMS
 
 pd.set_option('display.float_format', '{:.2f}'.format)
@@ -43,15 +44,15 @@ class ReportConstructor:
         
         raise ValueError(f"Report date {report_dot_date} not found")
     
-    def get_cell_value(self, nm_report, field_name, tag) -> str:
+    def get_cell_value(self, nm_report, field_name, tag):
         value = nm_report.loc[field_name]
         if tag.endswith('_percent'):
             value = round(value/100, 2)
 
+        if isinstance(value, np.generic):
+            value = value.item()
+        
         return value
-
-    def get_cell_coords(self, row_idx, col_idx):
-        return row_idx + 1, col_idx + 1     
 
     def get_nm_id(self, worksheet_rows):
         return int(worksheet_rows[NM_ID_ROW_IDX][NM_ID_COL_IDX])       

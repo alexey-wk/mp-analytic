@@ -1,14 +1,25 @@
-from datetime import datetime
-from app.data_filler import fill_sheet_column
+import logging
+from app.table_filler import TableFiller
 from app.date_formatter import DateFormatter
+from app.infrastructure.logger import setup_logger
+from app.infrastructure.config import get_config
 
-from_date = datetime(2025, 3, 24)
-to_date = datetime(2025, 3, 26)
+setup_logger()
+config = get_config()
+
 SPREADSHEET_NAME = "rnp-experiment"
-WORKSHEET_NAME = "task"
+WORKSHEET_NAMES = ["task", "bask"]
 
-report_dates = DateFormatter.generate_date_range(from_date, to_date)
-report_dates
-for report_date in report_dates:
-    fill_sheet_column(SPREADSHEET_NAME, WORKSHEET_NAME, report_date)
+if __name__ == "__main__":
+    dates = DateFormatter.generate_date_range('25.03.2025', '30.03.2025')
+
+    table_filler = TableFiller(config['api_token'], config['auth_cookies'])
+
+    tables = table_filler.get_tables(SPREADSHEET_NAME, WORKSHEET_NAMES)
+    all_nm_ids = table_filler.get_all_nm_ids()
+    all_adv_ids = table_filler.get_all_adv_ids()
+
+    for date in dates:
+        table_filler.fill_tables_column(tables, all_nm_ids, all_adv_ids, date)
+        logging.info(f'выгружены данные за {date.strftime("%d.%m.%Y")}')
 

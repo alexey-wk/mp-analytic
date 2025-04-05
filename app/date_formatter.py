@@ -10,10 +10,17 @@ class DateFormatter:
         return report_date.strftime('%d.%m.%Y')
 
     @staticmethod
-    def generate_date_range(from_date: datetime, to_date: datetime) -> list[datetime]:
-        if from_date > to_date:
-            raise ValueError("from_date must be before or equal to to_date")
-            
+    def generate_date_range(from_date_src: str, to_date_src: str) -> list[datetime]:
+        from_date = datetime.strptime(from_date_src, '%d.%m.%Y')
+        to_date = datetime.strptime(to_date_src, '%d.%m.%Y')
+        curr_date = datetime.now()
+        
+        if to_date > curr_date:
+            to_date = curr_date
+        
+        if from_date > curr_date:
+            to_date = curr_date
+
         date_list = []
         current_date = from_date
         

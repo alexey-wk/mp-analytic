@@ -63,3 +63,8 @@ class GoogleSheetsClient:
         client = gspread.authorize(self.creds)
         spreadsheet = client.open(spreadsheet_name)
         return spreadsheet.worksheet(worksheet_name)
+
+    def get_all_worksheets(self, spreadsheet_name: str):
+        client = gspread.authorize(self.creds)
+        spreadsheet = client.open(spreadsheet_name)
+        return spreadsheet.worksheets()

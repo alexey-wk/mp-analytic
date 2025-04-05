@@ -4,7 +4,7 @@ from urllib3.util import Retry
 from requests.adapters import HTTPAdapter
 from datetime import datetime
 from app.date_formatter import DateFormatter
-from app.client.limit_calls import limit_calls
+from app.infrastructure.limitter import limit_calls
 
 cards_url = 'https://content-api.wildberries.ru/content/v2/get/cards/list'
 cards_params = {'settings': {
@@ -49,7 +49,6 @@ class WBClient:
 
     @limit_calls(max_calls=2)
     def get_cards_stats(self, nm_ids: list[int], report_date: datetime):
-        print(f'get_cards_record call {datetime.now()}')
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
         cards_stat_period = {
             'begin': f'{dash_report_date} {DAY_START_TIME}',
@@ -64,6 +63,7 @@ class WBClient:
 
         try:
             res = self.client.post(cards_stats_url, headers=self.headers, json=params)
+
             res.raise_for_status()
             return res.json()['data']['cards']
         except Exception as e:
@@ -118,14 +118,15 @@ class WBClient:
                 'interval': adv_stat_interval,
             })
 
-        res = self.client.post(adv_stats_url, headers=self.headers, json=params)
-        res = res.json()
-
-        if not res or 'error' in res and 'there are no companies with correct intervals' in res['error']:
-            # print(f'в указанный период не было рекламных кампаний')
-            return []
-        else:
-            return res
+        try:
+            res = self.client.post(adv_stats_url, headers=self.headers, json=params)
+            return res.json()
+        except Exception as e:
+            if 'there are no companies with correct intervals' in str(e):
+                return []
+            else:
+                self.logger.error(f'Error getting adverts stats: {e}')
+                raise e
 
     @limit_calls(max_calls=60)
     def get_finreports(self, report_date: datetime):

@@ -27,7 +27,6 @@ class AdvertFormatter:
 
     def extract_nm_stats_from_advs(self, advs):
         nm_stat = {}
-        print(advs)
 
         for adv in advs:
             for day in adv['days']:
