@@ -60,13 +60,9 @@ REPORT_FIELDS = {
         'display_text': 'Выкупы, %',
         'tag': 'buyouts_percent'
     },
-    'stock_mp': {
-        'display_text': 'Остаток на складах продавца',
-        'tag': 'stock_mp'
-    },
-    'stock_wb': {
-        'display_text': 'Остаток на складах WB',
-        'tag': 'stock_wb'
+    'stock_count': {
+        'display_text': 'Остаток на складах',
+        'tag': 'stock_count'
     },
     'deliveryRub': {
         'display_text': 'Услуги по доставке товара покупателю',

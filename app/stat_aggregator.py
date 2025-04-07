@@ -2,8 +2,9 @@ adv_metrics = [
     'adv_views', 'adv_clicks', 'adv_atbs', 'adv_orders', 'adv_shks', 'adv_sum', 'adv_sum_price'
 ]
 card_metrics = ['card_clicks', 'card_atbs', 'card_orders', 'card_shks', 'card_sum_price',
-    'buyouts_count', 'buyouts_sum', 'buyouts_percent', 'stock_mp', 'stock_wb'
+    'buyouts_count', 'buyouts_sum', 'buyouts_percent',
 ]
+stock_metrics = ['stock_count']
 card_total_metrics = ['card_clicks', 'card_atbs', 'card_shks', 'card_sum_price']
 finrep_metrics = [
     'commissionPercent', 
@@ -26,15 +27,7 @@ finrep_metrics = [
 
 
 class StatAggregator:
-    def combine_stats(self, adv_stats, card_stats, finrep_stats):
-        #self._log_nm_ids(adv_stats, card_stats, finrep_stats)
-
-        all_nm_ids = list(set(
-            list(adv_stats.keys()) +
-            list(card_stats.keys()) +
-            list(finrep_stats.keys())
-        ))
-
+    def combine_stats(self, all_nm_ids, adv_stats, card_stats, stock_stats, finrep_stats):
         combined_stats = {}
 
         for id in all_nm_ids:
@@ -43,6 +36,9 @@ class StatAggregator:
             for metric in adv_metrics:
                 combined_stats[id][metric] = adv_stats.get(
                     id, {}).get(metric, 0)
+                
+            for metric in stock_metrics:
+                combined_stats[id][metric] = stock_stats.get(id, 0)
 
             for metric in card_metrics:
                 field_name = metric if metric in card_total_metrics else metric

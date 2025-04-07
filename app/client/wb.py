@@ -13,6 +13,8 @@ cards_params = {'settings': {
 }}
 cards_stats_url = 'https://seller-analytics-api.wildberries.ru/api/v2/nm-report/detail'
 
+stocks_url = 'https://seller-content.wildberries.ru/ns/analytics-api/content-analytics/api/v2/stocks-report/report'
+
 adv_url = 'https://advert-api.wildberries.ru/adv/v1/promotion/adverts'
 adv_auto_parms = {'status': 8}
 adv_auction_parms = {'status': 9}
@@ -69,8 +71,31 @@ class WBClient:
         except Exception as e:
             self.logger.error(f'Error getting cards stats: {e}')
             raise e
+        
+    @limit_calls(max_calls=100)
+    def get_stocks(self, nm_ids: list[int], report_date: datetime):
+        dash_report_date = DateFormatter.get_dash_report_date(report_date)
 
-    @limit_calls(max_calls=150)
+        stocks_params = {
+            'nmIDs': nm_ids,
+            'currentPeriod': {
+                'start': dash_report_date,
+                'end': dash_report_date
+            },
+            'stockType': '',
+            'skipDeletedNm': False,
+            'availabilityFilters': [],
+            'orderBy': {
+                'field': 'ordersCount',
+                'mode': 'desc'
+            }
+        }
+
+        res = self.client.post(stocks_url, cookies=self.cookies, json=stocks_params)
+        res.raise_for_status()
+        return res.json()['data']
+
+    @limit_calls(max_calls=100)
     def get_adverts(self):
         adv_auto, adv_auction = [], []
 
@@ -102,7 +127,7 @@ class WBClient:
 
         return adv_auto, adv_auction
 
-    @limit_calls(max_calls=1)
+    @limit_calls(max_calls=1, time_frame=60)
     def get_adverts_stats(self, adv_ids: list[int], report_date: datetime):
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
         params = []
@@ -118,15 +143,16 @@ class WBClient:
                 'interval': adv_stat_interval,
             })
 
-        try:
-            res = self.client.post(adv_stats_url, headers=self.headers, json=params)
+        res = self.client.post(adv_stats_url, headers=self.headers, json=params)
+        if res.status_code == 400:
+            return []
+        elif res.status_code != 200:
+            err = res.json()
+            self.logger.error(f'Error code {res.status_code} getting adverts stats: {err}')
+            raise Exception(err)
+        else:
             return res.json()
-        except Exception as e:
-            if 'there are no companies with correct intervals' in str(e):
-                return []
-            else:
-                self.logger.error(f'Error getting adverts stats: {e}')
-                raise e
+
 
     @limit_calls(max_calls=60)
     def get_finreports(self, report_date: datetime):

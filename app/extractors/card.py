@@ -8,12 +8,10 @@ CARD_FIELDS_MAP = {
     'buyouts_count': 'buyoutsCount',
     'buyouts_sum': 'buyoutsSumRub',
     'buyouts_percent': 'buyoutsPercent',
-    'stock_mp': 'stocksMp',
-    'stock_wb': 'stocksWb',
+
 }
 CARD_TRAFFIC_EXTRACT_FIELDS = ['clicks', 'atbs', 'shks', 'orders', 'sum_price']
 BUYOUT_EXTRACT_FIELDS = ['buyouts_count', 'buyouts_sum', 'buyouts_percent']
-STOCK_EXTRACT_FIELDS = ['stock_mp', 'stock_wb']
 
 class CardFormatter:
     def extract_nm_stats_from_cards(self, cards):
@@ -40,8 +38,6 @@ class CardFormatter:
             if field == 'buyouts_percent':
                 continue
             stat[nm_id][field] += statistics[CARD_FIELDS_MAP[field]]
-        for field in STOCK_EXTRACT_FIELDS:
-            stat[nm_id][field] += stocks[CARD_FIELDS_MAP[field]]
 
 
     def _set_nm_stat_from_cards(self, stat, nm_id, statistics, stocks):
@@ -54,5 +50,3 @@ class CardFormatter:
                 stat[nm_id][field] = statistics['conversions'][CARD_FIELDS_MAP[field]]
             else:
                 stat[nm_id][field] = statistics[CARD_FIELDS_MAP[field]]
-        for field in STOCK_EXTRACT_FIELDS:
-            stat[nm_id][field] = stocks[CARD_FIELDS_MAP[field]]

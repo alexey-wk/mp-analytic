@@ -7,6 +7,7 @@ from app.client.wb import WBClient
 from app.client.google_sheets import GoogleSheetsClient
 from app.extractors.advert import AdvertFormatter
 from app.extractors.card import CardFormatter
+from app.extractors.stock import StockFormatter
 from app.extractors.finreport import FinReportFormatter
 from app.stat_aggregator import StatAggregator
 from app.report_constructor.report_fields import TAG_TO_FIELD_NAME
@@ -18,6 +19,7 @@ class TableFiller:
         self.gs_client = GoogleSheetsClient()
         self.advFormatter = AdvertFormatter()
         self.cardFormatter = CardFormatter()
+        self.stockFormatter = StockFormatter()
         self.finrepFormatter = FinReportFormatter()
         self.statAggregator = StatAggregator()
         self.reportConstructor = ReportConstructor()
@@ -45,11 +47,15 @@ class TableFiller:
         adv_stat = self.wb_client.get_adverts_stats(all_adv_ids, report_date)
         nm_adv_stats = self.advFormatter.extract_nm_stats_from_advs(adv_stat)
         
-        # 2. Общий трафик (карточки), остатки и выкупы по nm_id
+        # 2. Общий трафик (карточки) и выкупы по nm_id
         cards_stats = self.wb_client.get_cards_stats(all_nm_ids, report_date)
         nm_card_stats = self.cardFormatter.extract_nm_stats_from_cards(cards_stats)
 
-        # 3. Расходы внутри маркетплейса по nm_id
+        # 3. Остатки по nm_id
+        stocks = self.wb_client.get_stocks(all_nm_ids, report_date)
+        nm_stock_stats = self.stockFormatter.extract_nm_stats_from_stocks(stocks)
+
+        # 4. Расходы внутри маркетплейса по nm_id
         finreps = self.wb_client.get_finreports(report_date)
         finrep_ids = self.finrepFormatter.extract_finreport_ids(finreps)
 
@@ -60,8 +66,8 @@ class TableFiller:
 
         nm_finrep_stats = self.finrepFormatter.extract_nm_stats_from_finrep_records(finrep_records)
 
-        # 4. Объединение всех данных по nm_id в финальный отчет
-        combined_stats = self.statAggregator.combine_stats(nm_adv_stats, nm_card_stats, nm_finrep_stats)
+        # 5. Объединение всех данных по nm_id в финальный отчет
+        combined_stats = self.statAggregator.combine_stats(all_nm_ids, nm_adv_stats, nm_card_stats, nm_stock_stats, nm_finrep_stats)
         reports = self.reportConstructor.generate_rnp_source(combined_stats)
 
         report_dot_date = DateFormatter.get_dot_report_date(report_date)
