@@ -32,13 +32,11 @@ class WBClient:
         self.headers = get_auth_headers(api_token)
         self.cookies = cookies
 
-
     @limit_calls(max_calls=100)
     def get_cards(self):
         res = self.client.post(cards_url, headers=self.headers, json=cards_params)
         res.raise_for_status()
         return res.json()
-
 
     @limit_calls(max_calls=2)
     def get_cards_stats(self, nm_ids: list[int], report_date: datetime):
@@ -56,7 +54,6 @@ class WBClient:
         res.raise_for_status()
         return res.json()
         
-
     @limit_calls(max_calls=100)
     def get_stocks(self, nm_ids: list[int], report_date: datetime):
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
@@ -80,7 +77,6 @@ class WBClient:
         res.raise_for_status()
         return res.json()
 
-
     @limit_calls(max_calls=100)
     def get_adverts(self):
         adv_auto, adv_auction = [], []
@@ -100,7 +96,6 @@ class WBClient:
             pass
 
         return adv_auto, adv_auction
-
 
     @limit_calls(max_calls=1, time_frame=60)
     def get_adverts_stats(self, adv_ids: list[int], report_date: datetime):
@@ -139,11 +134,9 @@ class WBClient:
         res.raise_for_status()
         return res.json()
 
-
     @limit_calls(max_calls=60)
     def get_finreport_stat_records(self, report_id: int):
         url = finreport_stat_url.format(report_id=report_id)
-
         res = self.client.get(url, headers=self.headers, cookies=self.cookies)
         res.raise_for_status()
-        return res.json()
+        return res.json()['data']['details']

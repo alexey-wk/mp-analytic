@@ -42,8 +42,7 @@ class FinReportFormatter:
         ids = [report['id'] for report in finreps]
         return ids
 
-    def extract_nm_stats_from_finrep_records(self, raw_finrep_records_res: dict):
-        raw_finrep_records = raw_finrep_records_res['data']['details']
+    def extract_nm_stats_from_finrep_records(self, raw_finrep_records):
         finrep_records = self._merge_records_by_srid(raw_finrep_records)
 
         nm_finrep_stats = {}
