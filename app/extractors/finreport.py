@@ -37,11 +37,13 @@ AVG_FIELDS = set([
 
 
 class FinReportFormatter:
-    def extract_finreport_ids(self, finrepsorts):
-        ids = [report['id'] for report in finrepsorts]
+    def extract_finreport_ids(self, finrepsorts_res: dict):
+        finreps = finrepsorts_res['data']['reports']
+        ids = [report['id'] for report in finreps]
         return ids
 
-    def extract_nm_stats_from_finrep_records(self, raw_finrep_records):
+    def extract_nm_stats_from_finrep_records(self, raw_finrep_records_res: dict):
+        raw_finrep_records = raw_finrep_records_res['data']['details']
         finrep_records = self._merge_records_by_srid(raw_finrep_records)
 
         nm_finrep_stats = {}

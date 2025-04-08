@@ -17,7 +17,10 @@ WORKSHEET_NAMES = [
 if __name__ == "__main__":
     dates = DateFormatter.generate_date_range('01.03.2025', '31.03.2025')
 
-    table_filler = TableFiller(config['api_token'], config['auth_cookies'])
+    table_filler = TableFiller(
+        config['api_token'], 
+        config['auth_cookies'], 
+        config['google_sheets_creds_path'])
 
     tables = table_filler.get_tables(SPREADSHEET_NAME, WORKSHEET_NAMES)
     all_nm_ids = table_filler.get_all_nm_ids()

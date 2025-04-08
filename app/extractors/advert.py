@@ -6,7 +6,8 @@ ADV_TRAFFIC_EXTRACT_FIELDS = ['views', 'clicks',
 
 
 class AdvertFormatter:
-    def extract_nm_ids_from_cards(self, cards: list[dict]):
+    def extract_nm_ids_from_cards_res(self, cards_res: dict):
+        cards = cards_res['cards']
         nm_ids = [card['nmID'] for card in cards]
         return nm_ids
 

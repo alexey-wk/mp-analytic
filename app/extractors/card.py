@@ -14,7 +14,9 @@ CARD_TRAFFIC_EXTRACT_FIELDS = ['clicks', 'atbs', 'shks', 'orders', 'sum_price']
 BUYOUT_EXTRACT_FIELDS = ['buyouts_count', 'buyouts_sum', 'buyouts_percent']
 
 class CardFormatter:
-    def extract_nm_stats_from_cards(self, cards):
+    def extract_nm_stats_from_cards_res(self, cards_res: dict):
+        cards = cards_res['data']['cards']
+
         nm_stat = {}
 
         for card in cards:

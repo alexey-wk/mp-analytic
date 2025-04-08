@@ -14,9 +14,9 @@ from app.report_constructor.report_fields import TAG_TO_FIELD_NAME
 from app.report_constructor.report_constructor import ReportConstructor
 
 class TableFiller:
-    def __init__(self, api_token: str, auth_cookies: dict):
+    def __init__(self, api_token: str, auth_cookies: dict, google_sheets_creds_path: str):
         self.wb_client = WBClient(auth_cookies, api_token)
-        self.gs_client = GoogleSheetsClient()
+        self.gs_client = GoogleSheetsClient(google_sheets_creds_path)
         self.advFormatter = AdvertFormatter()
         self.cardFormatter = CardFormatter()
         self.stockFormatter = StockFormatter()
@@ -34,7 +34,7 @@ class TableFiller:
     
     def get_all_nm_ids(self):
         cards = self.wb_client.get_cards()
-        return self.advFormatter.extract_nm_ids_from_cards(cards)
+        return self.advFormatter.extract_nm_ids_from_cards_res(cards)
     
     def get_all_adv_ids(self):
         adv_auto, adv_auction = self.wb_client.get_adverts()
@@ -49,7 +49,7 @@ class TableFiller:
         
         # 2. Общий трафик (карточки) и выкупы по nm_id
         cards_stats = self.wb_client.get_cards_stats(all_nm_ids, report_date)
-        nm_card_stats = self.cardFormatter.extract_nm_stats_from_cards(cards_stats)
+        nm_card_stats = self.cardFormatter.extract_nm_stats_from_cards_stats(cards_stats)
 
         # 3. Остатки по nm_id
         stocks = self.wb_client.get_stocks(all_nm_ids, report_date)
