@@ -1,8 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
-scope = ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
+from app.client.gs.contant import scope
 
 class GoogleSheetsClient:
     def __init__(self, creds_path: str):

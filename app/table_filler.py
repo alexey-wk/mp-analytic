@@ -3,8 +3,8 @@ import gspread
 import numpy as np
 from gspread import Worksheet
 from app.date_formatter import DateFormatter
-from app.client.wb import WBClient
-from app.client.google_sheets import GoogleSheetsClient
+from app.client.wb.wb import WBClient
+from app.client.gs.gs import GoogleSheetsClient
 from app.extractors.advert import AdvertFormatter
 from app.extractors.card import CardFormatter
 from app.extractors.stock import StockFormatter

@@ -1,7 +1,7 @@
 import time
 from collections import deque
 
-def limit_calls(max_calls=5, time_frame=60):
+def limit(max_calls=5, time_frame=60):
     call_times = deque()
 
     def clear_outdated_timestamps(curr_time):
