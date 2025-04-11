@@ -8,7 +8,7 @@ from app.extractors.advert import AdvertExtractor
 from app.extractors.card import CardExtractor
 from app.extractors.stock import StockExtractor
 from app.extractors.finreport import FinReportExtractor
-from app.aggregators.wb import StatAggregator
+from app.aggregators.wb import WBAggregator
 from app.report_constructor.report_fields import TAG_TO_FIELD_NAME
 from app.report_constructor.report_constructor import ReportConstructor
 
@@ -20,16 +20,14 @@ class TableFiller:
         self.cardFormatter = CardExtractor()
         self.stockFormatter = StockExtractor()
         self.finrepFormatter = FinReportExtractor()
-        self.statAggregator = StatAggregator()
+        self.wbAggregator = WBAggregator()
         self.reportConstructor = ReportConstructor()
     
     def get_tables(self, spreadsheet_name: str, worksheet_names: list[str]):
-        all_worksheets = self.gs_client.get_all_worksheets(spreadsheet_name)
-        tables = []
-        for worksheet in all_worksheets:
-            if worksheet.title in worksheet_names:
-                tables.append(worksheet)
-        return tables
+        all_sheets = self.gs_client.get_all_worksheets(spreadsheet_name)
+        return [
+            sheet for sheet in all_sheets if sheet.title in worksheet_names
+        ]
     
     def get_all_nm_ids(self):
         cards = self.wb_client.get_cards()
@@ -38,8 +36,7 @@ class TableFiller:
     def get_all_adv_ids(self):
         adv_auto, adv_auction = self.wb_client.get_adverts()
         adv_nms = self.advFormatter.group_nm_ids_by_adverts(adv_auto, adv_auction)
-        adv_ids = list(adv_nms.keys())
-        return adv_ids
+        return list(adv_nms.keys())
 
     def fill_tables_column(self, tables: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.datetime):
         # 1. Внутренний трафик по nm_id
@@ -66,7 +63,7 @@ class TableFiller:
         nm_finrep_stats = self.finrepFormatter.extract_nm_stats_from_finrep_records(finrep_records)
 
         # 5. Объединение всех данных по nm_id в финальный отчет
-        combined_stats = self.statAggregator.combine_stats(all_nm_ids, nm_adv_stats, nm_card_stats, nm_stock_stats, nm_finrep_stats)
+        combined_stats = self.wbAggregator.combine_stats(all_nm_ids, nm_adv_stats, nm_card_stats, nm_stock_stats, nm_finrep_stats)
         reports = self.reportConstructor.generate_rnp_source(combined_stats)
 
         report_dot_date = DateFormatter.get_dot_report_date(report_date)
@@ -81,19 +78,15 @@ class TableFiller:
             table.update_cells(cell_updates)
 
     def get_cell_updates(self, nm_report, tag_row_idxs, col_idx):
-        cell_updates = []
+        return [
+            self._get_cell_update(nm_report, TAG_TO_FIELD_NAME[tag], tag, tag_idx, col_idx)
+            for tag, tag_idx in tag_row_idxs 
+            if self._is_to_update(tag, nm_report)
+        ]
+    
+    def _is_to_update(self, tag, nm_report):
+        return tag in TAG_TO_FIELD_NAME and TAG_TO_FIELD_NAME[tag] in nm_report.index
 
-        for tag, tag_idx in tag_row_idxs:
-            if tag not in TAG_TO_FIELD_NAME:
-                continue
-            
-            field_name = TAG_TO_FIELD_NAME[tag]
-            if field_name in nm_report.index:
-                cell_update = self.get_cell_update(nm_report, field_name, tag, tag_idx, col_idx)
-                cell_updates.append(cell_update)
-
-        return cell_updates
-
-    def get_cell_update(self, nm_report, field_name, tag, row_idx, col_idx):
+    def _get_cell_update(self, nm_report, field_name, tag, row_idx, col_idx):
         cell_value = self.reportConstructor.get_cell_value(nm_report, field_name, tag)
         return gspread.Cell(row_idx+1, col_idx+1, cell_value)

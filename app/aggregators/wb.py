@@ -1,6 +1,6 @@
 from .constant import ADV_METRICS, STOCK_METRICS, CARD_METRICS, FINREP_METRICS
 
-class StatAggregator:
+class WBAggregator:
     def combine_stats(self, nm_ids, adv, card, stock, finrep):
         combined_stats = {}
 
