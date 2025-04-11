@@ -74,10 +74,10 @@ class TableFiller:
             date_col_idx = self.reportConstructor.find_date_col_idx(table_rows, report_dot_date)
             nm_id = self.reportConstructor.get_nm_id(table_rows)
 
-            cell_updates = self.get_cell_updates(reports[nm_id], tag_row_idxs, date_col_idx)
+            cell_updates = self._get_cell_updates(reports[nm_id], tag_row_idxs, date_col_idx)
             table.update_cells(cell_updates)
 
-    def get_cell_updates(self, nm_report, tag_row_idxs, col_idx):
+    def _get_cell_updates(self, nm_report, tag_row_idxs, col_idx):
         return [
             self._get_cell_update(nm_report, TAG_TO_FIELD_NAME[tag], tag, tag_idx, col_idx)
             for tag, tag_idx in tag_row_idxs 
