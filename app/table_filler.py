@@ -23,20 +23,24 @@ class TableFiller:
         self.wbAggregator = WBAggregator()
         self.reportConstructor = ReportConstructor()
     
+
     def get_tables(self, spreadsheet_name: str, worksheet_names: list[str]):
         all_sheets = self.gs_client.get_all_worksheets(spreadsheet_name)
         return [
             sheet for sheet in all_sheets if sheet.title in worksheet_names
         ]
     
+
     def get_all_nm_ids(self):
         cards = self.wb_client.get_cards()
         return self.advFormatter.extract_nm_ids_from_cards_res(cards)
     
+
     def get_all_adv_ids(self):
         adv_auto, adv_auction = self.wb_client.get_adverts()
         adv_nms = self.advFormatter.group_nm_ids_by_adverts(adv_auto, adv_auction)
         return list(adv_nms.keys())
+
 
     def fill_tables_column(self, tables: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.datetime):
         # 1. Внутренний трафик по nm_id
@@ -77,15 +81,18 @@ class TableFiller:
             cell_updates = self._get_cell_updates(reports[nm_id], tag_row_idxs, date_col_idx)
             table.update_cells(cell_updates)
 
+
     def _get_cell_updates(self, nm_report, tag_row_idxs, col_idx):
         return [
             self._get_cell_update(nm_report, TAG_TO_FIELD_NAME[tag], tag, tag_idx, col_idx)
             for tag, tag_idx in tag_row_idxs 
             if self._is_to_update(tag, nm_report)
         ]
-    
+
+
     def _is_to_update(self, tag, nm_report):
         return tag in TAG_TO_FIELD_NAME and TAG_TO_FIELD_NAME[tag] in nm_report.index
+
 
     def _get_cell_update(self, nm_report, field_name, tag, row_idx, col_idx):
         cell_value = self.reportConstructor.get_cell_value(nm_report, field_name, tag)
