@@ -1,6 +1,6 @@
 import logging
 from app.table_filler import TableFiller
-from app.date_formatter import DateFormatter
+from app.utils.date_formatter import DateFormatter
 from app.infrastructure.logger import setup_logger
 from app.infrastructure.config import get_config
 
@@ -9,9 +9,10 @@ config = get_config()
 
 SPREADSHEET_NAME = "rnp-experiment"
 WORKSHEET_NAMES = [
-    "Табурет стремянка деревянный подставка", 
-    "Сумка A4 хобо через плечо",
-    "Сумка маленькая дизайнерская"
+    # "Табурет стремянка деревянный подставка", 
+    # "Сумка A4 хобо через плечо",
+    # "Сумка маленькая дизайнерская"
+    "табуретка"
 ]
 
 if __name__ == "__main__":

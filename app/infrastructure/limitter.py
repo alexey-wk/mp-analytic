@@ -25,6 +25,6 @@ def limit(max_calls=5, time_frame=60):
             call_times.append(curr_time)
             
             return func(*args, **kwargs)
+        
         return wrapper
-
     return decorator

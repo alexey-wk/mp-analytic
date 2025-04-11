@@ -1,15 +1,14 @@
 import datetime
 import gspread
-import numpy as np
 from gspread import Worksheet
-from app.date_formatter import DateFormatter
+from app.utils.date_formatter import DateFormatter
 from app.client.wb.wb import WBClient
 from app.client.gs.gs import GoogleSheetsClient
-from app.extractors.advert import AdvertFormatter
-from app.extractors.card import CardFormatter
-from app.extractors.stock import StockFormatter
-from app.extractors.finreport import FinReportFormatter
-from app.stat_aggregator import StatAggregator
+from app.extractors.advert import AdvertExtractor
+from app.extractors.card import CardExtractor
+from app.extractors.stock import StockExtractor
+from app.extractors.finreport import FinReportExtractor
+from app.aggregators.wb import StatAggregator
 from app.report_constructor.report_fields import TAG_TO_FIELD_NAME
 from app.report_constructor.report_constructor import ReportConstructor
 
@@ -17,10 +16,10 @@ class TableFiller:
     def __init__(self, api_token: str, auth_cookies: dict, google_sheets_creds_path: str):
         self.wb_client = WBClient(auth_cookies, api_token)
         self.gs_client = GoogleSheetsClient(google_sheets_creds_path)
-        self.advFormatter = AdvertFormatter()
-        self.cardFormatter = CardFormatter()
-        self.stockFormatter = StockFormatter()
-        self.finrepFormatter = FinReportFormatter()
+        self.advFormatter = AdvertExtractor()
+        self.cardFormatter = CardExtractor()
+        self.stockFormatter = StockExtractor()
+        self.finrepFormatter = FinReportExtractor()
         self.statAggregator = StatAggregator()
         self.reportConstructor = ReportConstructor()
     

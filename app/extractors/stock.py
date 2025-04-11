@@ -1,4 +1,4 @@
-class StockFormatter:
+class StockExtractor:
     def extract_nm_stats_from_stocks(self, stocks_res: dict):
         stocks = stocks_res['data']
         nm_stat = {}
