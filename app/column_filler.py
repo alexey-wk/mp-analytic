@@ -12,10 +12,10 @@ from app.aggregators.wb import WBAggregator
 from app.report_constructor.report_fields import TAG_TO_FIELD_NAME
 from app.report_constructor.report_constructor import ReportConstructor
 
-class TableFiller:
-    def __init__(self, api_token: str, auth_cookies: dict, google_sheets_creds_path: str):
+class ColumnFiller:
+    def __init__(self, api_token: str, auth_cookies: dict, google_sheets_creds: dict):
         self.wb_client = WBClient(auth_cookies, api_token)
-        self.gs_client = GoogleSheetsClient(google_sheets_creds_path)
+        self.gs_client = GoogleSheetsClient(google_sheets_creds)
         self.advFormatter = AdvertExtractor()
         self.cardFormatter = CardExtractor()
         self.stockFormatter = StockExtractor()

@@ -3,14 +3,17 @@ from app.utils.date_formatter import DateFormatter
 from app.infrastructure.limitter import limit
 from app.client.client import get_client_with_retries, get_auth_headers
 from app.client.wb.constant import cards_url, cards_params, cards_stats_url, stocks_url, adv_url, adv_auto_parms, adv_auction_parms, adv_stats_url, finreports_url, finreport_stat_url, DAY_START_TIME, DAY_END_TIME, stocks_base_params
-
+from app.server.model import WBAuthCookies
 
 class WBClient:
-    def __init__(self, cookies: dict, api_token: str):
+    def __init__(self, cookies: WBAuthCookies, api_token: str):
         self.client = get_client_with_retries()
         self.headers = get_auth_headers(api_token)
-        self.cookies = cookies
-
+        self.cookies = {
+            'wbx-validation-key': cookies.wbxValidationKey,
+            'x-supplier-id-external': cookies.xSupplierIdExternal,
+            'WBTokenV3': cookies.wbTokenV3,
+        }
 
     @limit(100)
     def get_cards(self):
