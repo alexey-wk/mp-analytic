@@ -124,3 +124,9 @@ REPORT_FIELDS_ITEMS = REPORT_FIELDS.items()
 TAG_TO_FIELD_NAME = {
     val['tag']: key for key, val in REPORT_FIELDS_ITEMS
 }
+
+TAG_COL_IDX = 0
+DATE_ROW_IDX = 1
+NM_ID_ROW_IDX = 0
+NM_ID_COL_IDX = 2
+DISPLAY_TEXT_MAPPING = {field: info['display_text'] for field, info in REPORT_FIELDS.items()}

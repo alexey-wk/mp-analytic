@@ -1,9 +1,10 @@
 from .constant import SUM_FIELDS, AVG_FIELDS
 
+
 class FinReportExtractor:
-    def extract_finreport_ids(self, finrepsorts_res: dict):
-        finreps = finrepsorts_res['data']['reports']
-        ids = [report['id'] for report in finreps]
+    def extract_finrep_ids(self, finreps_res: dict):
+        finreps = finreps_res['data']['reports']
+        ids = [rep['id'] for rep in finreps]
         return ids
     
 
@@ -40,7 +41,7 @@ class FinReportExtractor:
             srid = record['srid']
             
             if srid not in merged_records:
-                merged_records[srid] = record.copy()
+                merged_records[srid] = record.copy()    # TODO: проверить, что слияние строк отчета происходит корректно
                 continue
 
             for field_name, value in record.items():
@@ -54,9 +55,10 @@ class FinReportExtractor:
     def _increment(self, stats, id,field_name, val):
         stats[id][field_name] += val
 
+
     def _average(self, stats, id, field_name, val):
         stats[id][field_name] = (stats[id][field_name] + val) / 2
 
+
     def _set(self, stats, id, field_name, val):
         stats[id][field_name] = val
-

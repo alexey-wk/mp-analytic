@@ -1,1 +1,15 @@
-`Вопросы по полям в РНП`
+`Общая схема работы`
+
+client
+  |||
+  |||
+   V
+extractors
+  |||
+  |||
+   V
+aggregators
+  |||
+  |||
+   V
+costructors

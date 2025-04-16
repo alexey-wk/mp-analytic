@@ -1,7 +1,10 @@
+import pandas as pd
 from .constant import ADV_METRICS, STOCK_METRICS, CARD_METRICS, FINREP_METRICS
 
+pd.set_option('display.float_format', '{:.2f}'.format)
+
 class WBAggregator:
-    def combine_stats(self, nm_ids, adv, card, stock, finrep):
+    def aggregate_stats(self, nm_ids, adv, card, stock, finrep):
         combined_stats = {}
 
         for id in nm_ids:
@@ -19,4 +22,4 @@ class WBAggregator:
             for metric in FINREP_METRICS:
                 combined_stats[id][metric] = finrep.get(id, {}).get(metric, 0)
 
-        return combined_stats
+        return pd.DataFrame(combined_stats).abs()

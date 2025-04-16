@@ -52,7 +52,7 @@ class WBClient:
         if res_auction.status_code != 204:
             adv_auction = res_auction.json()
 
-        return adv_auto, adv_auction
+        return [*adv_auto, *adv_auction]
 
 
     @limit(1)

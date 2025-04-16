@@ -5,20 +5,26 @@ class AdvertExtractor:
         cards = cards_res['cards']
         nm_ids = [card['nmID'] for card in cards]
         return nm_ids
+    
+
+    def get_all_adv_ids(self, advs: list[dict]):
+        all_advs = self._group_nm_ids_by_adverts(advs)
+        return list(all_advs.keys())
 
 
-    def group_nm_ids_by_adverts(self, adv_auto: list[dict], adv_auction: list[dict]):
+    def _group_nm_ids_by_adverts(self, advs: list[dict]):
         adv_nms = {}
 
-        for adv in adv_auto:
+        for adv in advs:
             id = adv['advertId']
-            adv_nms[id] = adv['autoParams']['nms']
 
-        for adv in adv_auction:
-            id = adv['advertId']
-            adv_nms[id] = []
-            for param in adv['unitedParams']:
-                adv_nms[id].extend(param['nms'])
+            if 'unitedParams' in adv:
+                adv_nms[id] = []
+                for param in adv['unitedParams']:
+                    adv_nms[id].extend(param['nms'])
+                    
+            elif 'autoParams' in adv:
+                adv_nms[id] = adv['autoParams']['nms']
 
         return adv_nms
 

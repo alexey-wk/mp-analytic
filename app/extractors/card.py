@@ -13,12 +13,12 @@ class CardExtractor:
             
             for field in CARD_TRAFFIC_EXTRACT_FIELDS:
                 prefixed_field = CARD_PREFIX + field
-                nm_stat[nm_id][prefixed_field] = nm_stat[nm_id].get(prefixed_field, 0) + statistics[CARD_FIELDS_MAP[field]]
+                nm_stat[nm_id][prefixed_field] = statistics[CARD_FIELDS_MAP[field]]
             
             for field in BUYOUT_EXTRACT_FIELDS:
                 if field.endswith('_percent'):
                     nm_stat[nm_id][field] = statistics['conversions'][CARD_FIELDS_MAP[field]]
                 else:
-                    nm_stat[nm_id][field] = nm_stat[nm_id].get(field, 0) + statistics[CARD_FIELDS_MAP[field]]
+                    nm_stat[nm_id][field] = statistics[CARD_FIELDS_MAP[field]]
 
         return nm_stat
