@@ -92,6 +92,10 @@ REPORT_FIELDS = {
         'display_text': 'Прочие удержания/выплаты',
         'tag': 'deduction_fee'
     },
+    'retailPrice': {
+        'display_text': 'Цена розничная',
+        'tag': 'retail_price'
+    },
 
     'acquiringFee': {
         'display_text': 'Эквайринг/Комиссии за организацию платежей',

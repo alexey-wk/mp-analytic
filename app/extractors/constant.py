@@ -38,6 +38,9 @@ AVG_FIELDS = set([
     'ppvzKvwPrcBase',             # Размер  кВВ без НДС, % Базовый Пример:  0.1375
     'ppvzKvwPrc'                  # Итоговый кВВ без НДС, % Пример: -0.0458
 ])
+AVG_POSITIVE_FIELDS = set([
+    'retailPrice',                # Цена розничная Пример: 2220
+])
 # также доступны для извлечения поля: salePercent, supplierSpp, costAmount, customerReward, costPrice,
 # productDiscountForReport, supplierPromo, retailCommission, forPayNds,
 # is_kgvp_v2, additionalPayment, dlvPrc, rebillLogisticCost, nomenclatureId, nds, srid
@@ -46,6 +49,5 @@ AVG_FIELDS = set([
 # deliveryAmount            # Количество доставок Пример: 1
 # quantity                  # Кол-во Пример: 3
 # ppvzVw                    # Вознаграждение с продаж до вычета услуг поверенного, без НДС Пример:  -131.416666666666666
-# retailPrice               # Цена розничная Пример: 2220
 # retailPriceWithDiscountRub# Цена розничная с учетом согласованной скидки Пример: 1989
 # retailAmount              # Вайлдберриз реализовал Товар (Пр) Пример: 1696

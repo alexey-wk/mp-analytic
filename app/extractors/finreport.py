@@ -1,4 +1,4 @@
-from .constant import SUM_FIELDS, AVG_FIELDS
+from .constant import SUM_FIELDS, AVG_FIELDS, AVG_POSITIVE_FIELDS
 
 
 class FinReportExtractor:
@@ -28,8 +28,8 @@ class FinReportExtractor:
                     self._increment(nm_stats, id, field_name, val)
                 elif field_name in AVG_FIELDS:
                     self._average(nm_stats, id, field_name, val)
-                else:
-                    self._set(nm_stats, id, field_name, val)
+                elif field_name in AVG_POSITIVE_FIELDS:
+                    self._average_positive(nm_stats, id, field_name, val)
 
         return nm_stats
 
@@ -57,8 +57,12 @@ class FinReportExtractor:
 
 
     def _average(self, stats, id, field_name, val):
-        stats[id][field_name] = (stats[id][field_name] + val) / 2
+        stats[id][field_name] = self._get_average(stats, id, field_name, val)
 
 
-    def _set(self, stats, id, field_name, val):
-        stats[id][field_name] = val
+    def _average_positive(self, stats, id, field_name, val):
+        if val > 0:
+            stats[id][field_name] = self._get_average(stats, id, field_name, val)
+
+    def _get_average(self, stats, id, field_name, val):
+        return (stats[id][field_name] + val) / 2

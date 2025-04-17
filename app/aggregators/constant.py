@@ -19,6 +19,7 @@ FINREP_METRICS = [
     'returnAmount',
     'acceptance',
     'deduction',
+    'retailPrice',
 
     'acquiringFee',
     'forPay',
