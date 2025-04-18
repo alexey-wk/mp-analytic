@@ -20,6 +20,7 @@ FINREP_METRICS = [
     'acceptance',
     'deduction',
     'retailPrice',
+    'nds',
 
     'acquiringFee',
     'forPay',

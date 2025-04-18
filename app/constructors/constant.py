@@ -96,6 +96,10 @@ REPORT_FIELDS = {
         'display_text': 'Цена розничная',
         'tag': 'retail_price'
     },
+    'nds': {
+        'display_text': 'НДС',
+        'tag': 'nds'
+    },
 
     'acquiringFee': {
         'display_text': 'Эквайринг/Комиссии за организацию платежей',
@@ -131,6 +135,6 @@ TAG_TO_FIELD_NAME = {
 
 TAG_COL_IDX = 0
 DATE_ROW_IDX = 1
-NM_ID_ROW_IDX = 0
+NM_ID_ROW_IDX = 1
 NM_ID_COL_IDX = 2
 DISPLAY_TEXT_MAPPING = {field: info['display_text'] for field, info in REPORT_FIELDS.items()}

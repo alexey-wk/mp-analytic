@@ -40,10 +40,11 @@ AVG_FIELDS = set([
 ])
 AVG_POSITIVE_FIELDS = set([
     'retailPrice',                # Цена розничная Пример: 2220
+    'nds',                        # НДС Пример: 20
 ])
 # также доступны для извлечения поля: salePercent, supplierSpp, costAmount, customerReward, costPrice,
 # productDiscountForReport, supplierPromo, retailCommission, forPayNds,
-# is_kgvp_v2, additionalPayment, dlvPrc, rebillLogisticCost, nomenclatureId, nds, srid
+# is_kgvp_v2, additionalPayment, dlvPrc, rebillLogisticCost, nomenclatureId, srid
 # ppvzForPay, goodsIncomeID, currency
 # acquiringPercent          # Размер комиссии за эквайринг/Комиссии за организацию платежей, % Пример: 1.7
 # deliveryAmount            # Количество доставок Пример: 1

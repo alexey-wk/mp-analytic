@@ -1,2 +1,9 @@
 fastapi
 uvicorn
+pandas
+numpy
+requests
+gspread
+oauth2client
+pydantic
+urllib3
