@@ -1,4 +1,4 @@
-from .constant import SUM_FIELDS, AVG_FIELDS, AVG_POSITIVE_FIELDS
+from .constant import SUM_FIELDS, AVG_POSITIVE_FIELDS
 
 
 class FinReportExtractor:
@@ -26,12 +26,10 @@ class FinReportExtractor:
             for field_name, val in record.items():
                 if field_name in SUM_FIELDS:
                     self._increment(nm_stats, id, field_name, val)
-                elif field_name in AVG_FIELDS:
-                    self._average(nm_stats, id, field_name, val)
                 elif field_name in AVG_POSITIVE_FIELDS:
                     self._average_positive(nm_stats, id, field_name, val)
-
         return nm_stats
+
 
 
     def _merge_records_by_srid(self, raw_records):

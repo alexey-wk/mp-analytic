@@ -15,7 +15,8 @@ def get_client_with_retries():
 
     return client
 
-def get_auth_headers(api_token: str):
+def get_auth_headers(api_token: str, authorizev3: str):
     return {
-        'Authorization': f'Bearer {api_token}'
+        'Authorization': f'Bearer {api_token}',
+        'authorizev3': authorizev3
     }

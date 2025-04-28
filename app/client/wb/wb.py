@@ -8,7 +8,7 @@ from app.server.model import WBAuthCookies
 class WBClient:
     def __init__(self, cookies: WBAuthCookies, api_token: str):
         self.client = get_client_with_retries()
-        self.headers = get_auth_headers(api_token)
+        self.headers = get_auth_headers(api_token, cookies.authorizev3)
         self.cookies = {
             'wbx-validation-key': cookies.wbxValidationKey,
             'x-supplier-id-external': cookies.xSupplierIdExternal,
@@ -63,7 +63,8 @@ class WBClient:
             return []
 
         res.raise_for_status()
-        return res.json()
+        advs = res.json()
+        return advs or []
 
 
     @limit(60)
