@@ -1,3 +1,4 @@
+from datetime import datetime
 from .constant import SUM_FIELDS, AVG_POSITIVE_FIELDS
 
 
@@ -8,7 +9,7 @@ class FinReportExtractor:
         return ids
     
 
-    def extract_nm_stats_from_finrep_records(self, raw_finrep_records):
+    def extract_nm_daily_stats_from_finrep_records(self, raw_finrep_records):
         finrep_records = self._merge_records_by_srid(raw_finrep_records)
 
         nm_stats = {}
@@ -18,18 +19,27 @@ class FinReportExtractor:
             if id == 0:
                 continue
 
-            if id not in nm_stats:
-                nm_stats[id] = record.copy()
-                nm_stats[id]['nmId'] = id
+            order_date = self.get_record_order_date(record)
+
+            if order_date not in nm_stats:
+                nm_stats[order_date] = {}
+
+            if id not in nm_stats[order_date]:
+                nm_stats[order_date][id] = record.copy()
+                nm_stats[order_date][id]['nmId'] = id
                 continue
 
             for field_name, val in record.items():
                 if field_name in SUM_FIELDS:
-                    self._increment(nm_stats, id, field_name, val)
+                    self._increment(nm_stats, order_date, id, field_name, val)
                 elif field_name in AVG_POSITIVE_FIELDS:
-                    self._average_positive(nm_stats, id, field_name, val)
+                    self._average_positive(nm_stats, order_date, id, field_name, val)
         return nm_stats
 
+
+    def get_record_order_date(self, record):
+        order_datetime = datetime.fromisoformat(record['orderDate'])
+        return order_datetime.date()
 
 
     def _merge_records_by_srid(self, raw_records):
@@ -50,17 +60,14 @@ class FinReportExtractor:
         return list(merged_records.values())
 
 
-    def _increment(self, stats, id,field_name, val):
-        stats[id][field_name] += val
+    def _increment(self, stats, order_date, id, field_name, val):
+        stats[order_date][id][field_name] += val
 
 
-    def _average(self, stats, id, field_name, val):
-        stats[id][field_name] = self._get_average(stats, id, field_name, val)
-
-
-    def _average_positive(self, stats, id, field_name, val):
+    def _average_positive(self, stats, order_date, id, field_name, val):
         if val > 0:
-            stats[id][field_name] = self._get_average(stats, id, field_name, val)
+            stats[order_date][id][field_name] = self._get_average(stats, order_date, id, field_name, val)
 
-    def _get_average(self, stats, id, field_name, val):
-        return (stats[id][field_name] + val) / 2
+
+    def _get_average(self, stats, order_date, id, field_name, val):
+        return (stats[order_date][id][field_name] + val) / 2

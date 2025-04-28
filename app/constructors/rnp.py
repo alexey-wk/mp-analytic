@@ -34,9 +34,28 @@ class RnpConstructor:
         nm_ids = self.get_all_nm_ids()
         adv_ids = self.get_all_adv_ids()
 
-        dates = DateFormatter.generate_date_range(date_from, date_to)
+        from_date = datetime.datetime.strptime(date_from, '%d.%m.%Y')
+        to_date = datetime.datetime.strptime(date_to, '%d.%m.%Y')
+        to_date_finrep = to_date + datetime.timedelta(days=7)
+
+        # сбор данных за весь отрезок + 7 дней
+        weekly_finreps = self.wb_client.get_weekly_finreports(from_date, to_date_finrep)
+        if len(weekly_finreps) > 0:
+            last_weekly_finrep = weekly_finreps[-1]
+            last_weekly_finrep_date = datetime.datetime.strptime(last_weekly_finrep['dateTo'], '%d.%m.%Y')
+
+        daily_finreps = []
+        if last_weekly_finrep_date < to_date_finrep:
+            daily_finrep = self.wb_client.get_dayly_finreports(last_weekly_finrep_date, to_date_finrep)
+            daily_finreps.extend(daily_finrep)
+
+        finreps = [*weekly_finreps, *daily_finreps]
+        finrep_stats = self.get_finrep_stats(finreps)
+
+        dates = DateFormatter.generate_date_range(from_date, to_date)
         for date in dates:
-            self.fill_sheets_column(sheets, nm_ids, adv_ids, date)
+            nm_finrep_stats = finrep_stats[date]
+            self.fill_sheets_column(sheets, nm_ids, adv_ids, date, nm_finrep_stats)
             logging.info(f'внесены в таблицу данные за {date.strftime("%d.%m.%Y")}')
 
         logging.info('извлечение данных завершено')
@@ -59,7 +78,7 @@ class RnpConstructor:
         return self.adv_extractor.get_all_adv_ids(advs)
 
 
-    def fill_sheets_column(self, sheets: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.datetime):
+    def fill_sheets_column(self, sheets: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.datetime, nm_finrep_stats: dict):
         # 1. Внутренний трафик по nm_id
         adv_stat = self.wb_client.get_adverts_stats(all_adv_ids, report_date)
         nm_adv_stats = self.adv_extractor.extract_nm_stats_from_advs(adv_stat)
@@ -72,11 +91,7 @@ class RnpConstructor:
         stocks = self.wb_client.get_stocks(all_nm_ids, report_date)
         nm_stock_stats = self.stock_extractor.extract_nm_stats_from_stocks(stocks)
 
-        # 4. Расходы внутри маркетплейса по nm_id
-        finreps = self.wb_client.get_finreports(report_date)
-        nm_finrep_stats = self.get_finrep_stats(finreps)
-
-        # 5. Объединение всех данных по nm_id в финальный отчет
+        # 4. Объединение всех данных по nm_id в финальный отчет
         aggregated_stats = self.wb_aggregator.aggregate_stats(all_nm_ids, nm_adv_stats, nm_card_stats, nm_stock_stats, nm_finrep_stats)
 
         report_dot_date = DateFormatter.get_dot_report_date(report_date)
@@ -92,7 +107,7 @@ class RnpConstructor:
             finrep_stat = self.wb_client.get_finreport_stat_records(id)
             finrep_records.extend(finrep_stat)
 
-        return self.finrep_extractor.extract_nm_stats_from_finrep_records(finrep_records)
+        return self.finrep_extractor.extract_nm_daily_stats_from_finrep_records(finrep_records)
 
 
     def fill_sheet_column(self, sheet: Worksheet, aggregated_stats: dict, dot_date: str):

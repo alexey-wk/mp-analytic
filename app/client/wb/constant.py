@@ -24,7 +24,8 @@ adv_auction_parms = {'status': 9}
 
 adv_stats_url = 'https://advert-api.wildberries.ru/adv/v2/fullstats'
 
-finreports_url = 'https://seller-services.wildberries.ru/ns/reports/seller-wb-balance/api/v1/reports'
+finreports_day_url = 'https://seller-services.wildberries.ru/ns/reports/seller-wb-balance/api/v1/reports'
+finreports_week_url = 'https://seller-services.wildberries.ru/ns/reports/seller-wb-balance/api/v1/eports-weekly'
 finreport_stat_url = "https://seller-services.wildberries.ru/ns/reports/seller-wb-balance/api/v1/reports/{report_id}/details"
 
 DAY_START_TIME = '00:00:00'
