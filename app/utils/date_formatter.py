@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 
 class DateFormatter:
     @staticmethod
@@ -10,8 +10,8 @@ class DateFormatter:
         return report_date.strftime('%d.%m.%Y')
 
     @staticmethod
-    def generate_date_range(from_date: datetime, to_date: datetime) -> list[datetime]:
-        curr_date = datetime.now()
+    def generate_date_range(from_date: date, to_date: date) -> list[date]:
+        curr_date = datetime.now().date()
         
         if to_date > curr_date:
             to_date = curr_date

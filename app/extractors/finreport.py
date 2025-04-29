@@ -3,13 +3,12 @@ from .constant import SUM_FIELDS, AVG_POSITIVE_FIELDS
 
 
 class FinReportExtractor:
-    def extract_finrep_ids(self, finreps_res: dict):
-        finreps = finreps_res['data']['reports']
+    def extract_finrep_ids(self, finreps: dict):
         ids = [rep['id'] for rep in finreps]
         return ids
     
 
-    def extract_nm_daily_stats_from_finrep_records(self, raw_finrep_records):
+    def extract_nm_stats_from_finrep_records(self, raw_finrep_records):
         finrep_records = self._merge_records_by_srid(raw_finrep_records)
 
         nm_stats = {}

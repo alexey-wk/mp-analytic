@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date 
 from app.utils.date_formatter import DateFormatter
 from app.infrastructure.limitter import limit
 from app.client.client import get_client_with_retries, get_auth_headers
@@ -23,7 +23,7 @@ class WBClient:
 
 
     @limit(2)
-    def get_cards_stats(self, nm_ids: list[int], report_date: datetime):
+    def get_cards_stats(self, nm_ids: list[int], report_date: date):
         params = self._create_card_stats_params(nm_ids, report_date)
         res = self.client.post(cards_stats_url, headers=self.headers, json=params)
         res.raise_for_status()
@@ -31,7 +31,7 @@ class WBClient:
         
 
     @limit(100)
-    def get_stocks(self, nm_ids: list[int], report_date: datetime):
+    def get_stocks(self, nm_ids: list[int], report_date: date):
         params = self._create_stocks_params(nm_ids, report_date)
         res = self.client.post(stocks_url, cookies=self.cookies, json=params)
         res.raise_for_status()
@@ -56,7 +56,7 @@ class WBClient:
 
 
     @limit(1)
-    def get_adverts_stats(self, adv_ids: list[int], report_date: datetime):
+    def get_adverts_stats(self, adv_ids: list[int], report_date: date):
         params = self._create_adv_stats_params(adv_ids, report_date)
         res = self.client.post(adv_stats_url, headers=self.headers, json=params)
         if res.status_code == 400:
@@ -68,7 +68,7 @@ class WBClient:
 
 
     @limit(60)
-    def get_dayly_finreports(self, from_date: datetime, to_date: datetime):
+    def get_dayly_finreports(self, from_date: date, to_date: date):
         params = self._create_finreport_params(from_date, to_date)
         res = self.client.get(finreports_day_url, cookies=self.cookies, params=params)
         res.raise_for_status()
@@ -76,7 +76,7 @@ class WBClient:
 
 
     @limit(60)
-    def get_weekly_finreports(self, from_date: datetime, to_date: datetime):
+    def get_weekly_finreports(self, from_date: date, to_date: date):
         params = self._create_finreport_params(from_date, to_date)
         res = self.client.get(finreports_week_url, cookies=self.cookies, params=params)
         res.raise_for_status()
@@ -90,7 +90,7 @@ class WBClient:
         return res.json()['data']['details']
 
 
-    def _create_card_stats_params(self, nm_ids: list[int], report_date: datetime):
+    def _create_card_stats_params(self, nm_ids: list[int], report_date: date):
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
 
         return {
@@ -103,7 +103,7 @@ class WBClient:
         }
 
 
-    def _create_stocks_params(self, nm_ids: list[int], report_date: datetime):
+    def _create_stocks_params(self, nm_ids: list[int], report_date: date):
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
 
         return {
@@ -116,7 +116,7 @@ class WBClient:
         }
 
 
-    def _create_adv_stats_params(self, adv_ids: list[int], report_date: datetime):
+    def _create_adv_stats_params(self, adv_ids: list[int], report_date: date):
         dash_report_date = DateFormatter.get_dash_report_date(report_date)
         adv_stat_interval = {
             'begin': dash_report_date,
@@ -133,7 +133,7 @@ class WBClient:
         return params
 
     
-    def _create_finreport_params(self, from_date: datetime, to_date: datetime):
+    def _create_finreport_params(self, from_date: date, to_date: date):
         dot_from_date = DateFormatter.get_dot_report_date(from_date)
         dot_to_date = DateFormatter.get_dot_report_date(to_date)
 

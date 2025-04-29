@@ -34,27 +34,29 @@ class RnpConstructor:
         nm_ids = self.get_all_nm_ids()
         adv_ids = self.get_all_adv_ids()
 
-        from_date = datetime.datetime.strptime(date_from, '%d.%m.%Y')
-        to_date = datetime.datetime.strptime(date_to, '%d.%m.%Y')
+        from_date = datetime.datetime.strptime(date_from, '%d.%m.%Y').date()
+        to_date = datetime.datetime.strptime(date_to, '%d.%m.%Y').date()
         to_date_finrep = to_date + datetime.timedelta(days=7)
 
-        # сбор данных за весь отрезок + 7 дней
-        weekly_finreps = self.wb_client.get_weekly_finreports(from_date, to_date_finrep)
+        weekly_finreps_res = self.wb_client.get_weekly_finreports(from_date, to_date_finrep)
+        weekly_finreps = weekly_finreps_res['data']['reports']
+
         if len(weekly_finreps) > 0:
             last_weekly_finrep = weekly_finreps[-1]
-            last_weekly_finrep_date = datetime.datetime.strptime(last_weekly_finrep['dateTo'], '%d.%m.%Y')
+            last_weekly_finrep_date = datetime.datetime.fromisoformat(last_weekly_finrep['dateTo']).replace(tzinfo=None).date()
 
         daily_finreps = []
         if last_weekly_finrep_date < to_date_finrep:
-            daily_finrep = self.wb_client.get_dayly_finreports(last_weekly_finrep_date, to_date_finrep)
-            daily_finreps.extend(daily_finrep)
+            daily_finrep_res = self.wb_client.get_dayly_finreports(last_weekly_finrep_date, to_date_finrep)
+            daily_finreps = daily_finrep_res['data']['reports']
+            daily_finreps.extend(daily_finreps)
 
         finreps = [*weekly_finreps, *daily_finreps]
         finrep_stats = self.get_finrep_stats(finreps)
 
         dates = DateFormatter.generate_date_range(from_date, to_date)
         for date in dates:
-            nm_finrep_stats = finrep_stats[date]
+            nm_finrep_stats = finrep_stats.get(date, {})
             self.fill_sheets_column(sheets, nm_ids, adv_ids, date, nm_finrep_stats)
             logging.info(f'внесены в таблицу данные за {date.strftime("%d.%m.%Y")}')
 
@@ -78,7 +80,7 @@ class RnpConstructor:
         return self.adv_extractor.get_all_adv_ids(advs)
 
 
-    def fill_sheets_column(self, sheets: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.datetime, nm_finrep_stats: dict):
+    def fill_sheets_column(self, sheets: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.date, nm_finrep_stats: dict):
         # 1. Внутренний трафик по nm_id
         adv_stat = self.wb_client.get_adverts_stats(all_adv_ids, report_date)
         nm_adv_stats = self.adv_extractor.extract_nm_stats_from_advs(adv_stat)
@@ -107,7 +109,7 @@ class RnpConstructor:
             finrep_stat = self.wb_client.get_finreport_stat_records(id)
             finrep_records.extend(finrep_stat)
 
-        return self.finrep_extractor.extract_nm_daily_stats_from_finrep_records(finrep_records)
+        return self.finrep_extractor.extract_nm_stats_from_finrep_records(finrep_records)
 
 
     def fill_sheet_column(self, sheet: Worksheet, aggregated_stats: dict, dot_date: str):
