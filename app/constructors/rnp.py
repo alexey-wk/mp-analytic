@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 import gspread
 import logging
 import numpy as np
@@ -27,34 +27,16 @@ class RnpConstructor:
         self.wb_aggregator = WBAggregator()
     
 
-    def fill_range(self, date_from: str, date_to: str, spreadsheet_name: str, worksheet_names: list[str]):
+    def fill_range(self, date_from: date, date_to: date, spreadsheet_name: str, worksheet_names: list[str]):
         logging.info('начало извлечения данных')
 
         sheets = self.get_sheets(spreadsheet_name, worksheet_names)
         nm_ids = self.get_all_nm_ids()
         adv_ids = self.get_all_adv_ids()
-
-        from_date = datetime.datetime.strptime(date_from, '%d.%m.%Y').date()
-        to_date = datetime.datetime.strptime(date_to, '%d.%m.%Y').date()
-        to_date_finrep = to_date + datetime.timedelta(days=7)
-
-        weekly_finreps_res = self.wb_client.get_weekly_finreports(from_date, to_date_finrep)
-        weekly_finreps = weekly_finreps_res['data']['reports']
-
-        if len(weekly_finreps) > 0:
-            last_weekly_finrep = weekly_finreps[-1]
-            last_weekly_finrep_date = datetime.datetime.fromisoformat(last_weekly_finrep['dateTo']).replace(tzinfo=None).date()
-
-        daily_finreps = []
-        if last_weekly_finrep_date < to_date_finrep:
-            daily_finrep_res = self.wb_client.get_dayly_finreports(last_weekly_finrep_date, to_date_finrep)
-            daily_finreps = daily_finrep_res['data']['reports']
-            daily_finreps.extend(daily_finreps)
-
-        finreps = [*weekly_finreps, *daily_finreps]
+        finreps = self.get_all_finreps(date_from, date_to)
         finrep_stats = self.get_finrep_stats(finreps)
 
-        dates = DateFormatter.generate_date_range(from_date, to_date)
+        dates = DateFormatter.generate_date_range(date_from, date_to)
         for date in dates:
             nm_finrep_stats = finrep_stats.get(date, {})
             self.fill_sheets_column(sheets, nm_ids, adv_ids, date, nm_finrep_stats)
@@ -80,7 +62,27 @@ class RnpConstructor:
         return self.adv_extractor.get_all_adv_ids(advs)
 
 
-    def fill_sheets_column(self, sheets: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: datetime.date, nm_finrep_stats: dict):
+    def get_all_finreps(self, date_from: date, date_to: date):
+        date_to_extended = DateFormatter.add_days(date_to, 7)
+
+        reps_res = self.wb_client.get_week_finreps(date_from, date_to_extended)
+        reps = self.finrep_extractor.extract_reps(reps_res)
+        if len(reps) == 0: 
+            return reps
+            
+        last_week_rep = reps[-1]
+        last_week_rep_to = DateFormatter.get_date_from_iso(last_week_rep['dateTo'])
+
+        if date_to_extended > last_week_rep_to:
+            day_rep_from = DateFormatter.add_days(last_week_rep_to, 1)
+            day_reps_res = self.wb_client.get_day_finreps(day_rep_from, date_to_extended)
+            day_reps = self.finrep_extractor.extract_reps(day_reps_res)
+            reps.extend(day_reps)
+
+        return reps
+
+
+    def fill_sheets_column(self, sheets: list[Worksheet], all_nm_ids: list[int], all_adv_ids: list[int], report_date: date, nm_finrep_stats: dict):
         # 1. Внутренний трафик по nm_id
         adv_stat = self.wb_client.get_adverts_stats(all_adv_ids, report_date)
         nm_adv_stats = self.adv_extractor.extract_nm_stats_from_advs(adv_stat)
@@ -96,13 +98,13 @@ class RnpConstructor:
         # 4. Объединение всех данных по nm_id в финальный отчет
         aggregated_stats = self.wb_aggregator.aggregate_stats(all_nm_ids, nm_adv_stats, nm_card_stats, nm_stock_stats, nm_finrep_stats)
 
-        report_dot_date = DateFormatter.get_dot_report_date(report_date)
+        report_dot_date = DateFormatter.get_dot_date(report_date)
         for sheet in sheets:
             self.fill_sheet_column(sheet, aggregated_stats, report_dot_date)
 
 
     def get_finrep_stats(self, finreps: list[dict]):
-        finrep_ids = self.finrep_extractor.extract_finrep_ids(finreps)
+        finrep_ids = self.finrep_extractor.extract_ids(finreps)
 
         finrep_records = []
         for id in finrep_ids:

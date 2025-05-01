@@ -68,7 +68,7 @@ class WBClient:
 
 
     @limit(60)
-    def get_dayly_finreports(self, from_date: date, to_date: date):
+    def get_day_finreps(self, from_date: date, to_date: date):
         params = self._create_finreport_params(from_date, to_date)
         res = self.client.get(finreports_day_url, cookies=self.cookies, params=params)
         res.raise_for_status()
@@ -76,7 +76,7 @@ class WBClient:
 
 
     @limit(60)
-    def get_weekly_finreports(self, from_date: date, to_date: date):
+    def get_week_finreps(self, from_date: date, to_date: date):
         params = self._create_finreport_params(from_date, to_date)
         res = self.client.get(finreports_week_url, cookies=self.cookies, params=params)
         res.raise_for_status()
@@ -91,7 +91,7 @@ class WBClient:
 
 
     def _create_card_stats_params(self, nm_ids: list[int], report_date: date):
-        dash_report_date = DateFormatter.get_dash_report_date(report_date)
+        dash_report_date = DateFormatter.get_dash_date(report_date)
 
         return {
             'nmIDs': nm_ids,
@@ -104,7 +104,7 @@ class WBClient:
 
 
     def _create_stocks_params(self, nm_ids: list[int], report_date: date):
-        dash_report_date = DateFormatter.get_dash_report_date(report_date)
+        dash_report_date = DateFormatter.get_dash_date(report_date)
 
         return {
             'nmIDs': nm_ids,
@@ -117,7 +117,7 @@ class WBClient:
 
 
     def _create_adv_stats_params(self, adv_ids: list[int], report_date: date):
-        dash_report_date = DateFormatter.get_dash_report_date(report_date)
+        dash_report_date = DateFormatter.get_dash_date(report_date)
         adv_stat_interval = {
             'begin': dash_report_date,
             'end': dash_report_date,
@@ -134,8 +134,8 @@ class WBClient:
 
     
     def _create_finreport_params(self, from_date: date, to_date: date):
-        dot_from_date = DateFormatter.get_dot_report_date(from_date)
-        dot_to_date = DateFormatter.get_dot_report_date(to_date)
+        dot_from_date = DateFormatter.get_dot_date(from_date)
+        dot_to_date = DateFormatter.get_dot_date(to_date)
 
         return {
             'dateFrom': dot_from_date,
