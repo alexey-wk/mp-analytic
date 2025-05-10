@@ -98,7 +98,7 @@ REPORT_FIELDS = {
     },
     'nds': {
         'display_text': 'НДС',
-        'tag': 'nds'
+        'tag': 'nds_percent'
     },
 
     'acquiringFee': {
