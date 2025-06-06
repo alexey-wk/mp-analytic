@@ -4,22 +4,22 @@ import logging
 import numpy as np
 from gspread import Worksheet
 from app.utils.date_formatter import DateFormatter
-from app.client.wb.wb import WBClient
-from app.client.gs.gs import GoogleSheetsClient
-from app.extractors.advert import AdvertExtractor
-from app.extractors.card import CardExtractor
-from app.extractors.stock import StockExtractor
-from app.extractors.finreport import FinReportExtractor
-from app.aggregators.wb import WBAggregator
-from app.server.model import WBAuthCookies
+from app.service.rnp.client.wb.wb import WBClient
+from app.service.rnp.client.gs.gs import GoogleSheetsClient
+from app.service.rnp.extractors.advert import AdvertExtractor
+from app.service.rnp.extractors.card import CardExtractor
+from app.service.rnp.extractors.stock import StockExtractor
+from app.service.rnp.extractors.finreport import FinReportExtractor
+from app.service.rnp.aggregators.wb import WBAggregator
+from app.controller.request.request import WBAuthCookies
 from .constant import TAG_TO_FIELD_NAME
 from .constant import REPORT_FIELDS_ITEMS, TAG_COL_IDX, DATE_ROW_IDX, NM_ID_ROW_IDX, NM_ID_COL_IDX
 
 
 class RnpConstructor:
-    def __init__(self, auth_cookies: WBAuthCookies, api_token: str, google_sheets_creds: dict):
+    def __init__(self, auth_cookies: WBAuthCookies, api_token: str, google_sheets_creds_path: str):
         self.wb_client = WBClient(auth_cookies, api_token)
-        self.gs_client = GoogleSheetsClient(google_sheets_creds)
+        self.gs_client = GoogleSheetsClient(google_sheets_creds_path)
         self.adv_extractor = AdvertExtractor()
         self.card_extractor = CardExtractor()
         self.stock_extractor = StockExtractor()
@@ -28,7 +28,7 @@ class RnpConstructor:
     
 
     def fill_range(self, date_from: date, date_to: date, spreadsheet_name: str, worksheet_names: list[str]):
-        logging.info('начало извлечения данных')
+        logging.info(f'начало извлечения данных, spreadsheet_name: {spreadsheet_name}, worksheet_names: {worksheet_names}')
 
         sheets = self.get_sheets(spreadsheet_name, worksheet_names)
         nm_ids = self.get_all_nm_ids()

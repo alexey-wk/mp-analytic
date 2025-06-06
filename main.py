@@ -1,5 +1,5 @@
 from app.infrastructure.logger import setup_logger
-from app.server.server import run_server
+from app.app import run_server
 
 setup_logger()
 
