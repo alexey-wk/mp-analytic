@@ -17,9 +17,9 @@ jobs:
           username: root
           password: ${{secrets.VPS_SSH_PASSWORD}}
           script: |
-            rm -rf ./crypto-analysis;
-            git clone https://${{secrets.PERSONAL_ACCESS_TOKEN}}@github.com/alexey-wk/crypto-analysis.git;
-            cd crypto-analysis;
+            rm -rf ./mp-analytic;
+            git clone https://${{secrets.PERSONAL_ACCESS_TOKEN}}@github.com/alexey-wk/mp-analytic.git;
+            cd mp-analytic;
             git checkout master;
 
             export DB_USER="${{secrets.DB_USER}}";
