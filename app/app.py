@@ -11,7 +11,3 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(rnp_router)
 app.include_router(product_report_router)
 app.include_router(seller_account_router)
-
-def run_server():
-    init_db()
-    uvicorn.run(app, host="0.0.0.0", port=8000)
