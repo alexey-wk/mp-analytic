@@ -1,13 +1,18 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi_utilities import repeat_every
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from app.service.rnp.rnp import rnp_service
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    @repeat_every(seconds=300)
+    scheduler = AsyncIOScheduler()
+    
     async def cron_job() -> None:
         await rnp_service.update_all_reports()
     
-    await cron_job()
+    scheduler.add_job(cron_job, CronTrigger.from_crontab('0 0 * * *'))
+    
+    scheduler.start()
     yield
+    scheduler.shutdown()

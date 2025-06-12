@@ -1,0 +1,33 @@
+name: CI
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run command on remote server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 38.180.250.211
+          port: 22
+          username: root
+          password: ${{secrets.VPS_SSH_PASSWORD}}
+          script: |
+            rm -rf ./crypto-analysis;
+            git clone https://${{secrets.PERSONAL_ACCESS_TOKEN}}@github.com/alexey-wk/crypto-analysis.git;
+            cd crypto-analysis;
+            git checkout master;
+
+            export DB_USER="${{secrets.DB_USER}}";
+            export DB_PASSWORD="${{secrets.DB_PASSWORD}}";
+            
+            docker-compose --file docker-compose.yml down;
+            docker-compose --file docker-compose.yml rm -f;
+            docker-compose --file docker-compose.yml pull;
+            docker-compose --file docker-compose.yml up --build -d;
+            docker-compose logs;
+            
