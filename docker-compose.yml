@@ -5,8 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      network: "host"
-    network_mode: "host"
     ports:
       - "8000:8000"
     depends_on:
