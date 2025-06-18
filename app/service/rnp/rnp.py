@@ -7,12 +7,12 @@ from app.repository.db import get_db
 from app.repository.seller_account import get_all_seller_accounts
 from app.repository.product_report import get_product_report_by_seller_account_id
 from app.repository.entity.seller_account import SellerAccount
+from app.config import config
 import asyncio
-GOOGLE_SHEETS_CREDS_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + '/google/sa_creds.json'
 
 class RnpService:
     def fill_range_by_req(self, date_from_str: str, date_to_str: str, api_token: str, auth_cookies: WBAuthCookies, spreadsheet_name: str, worksheet_names: list[str]):
-        rnp_constructor = RnpConstructor(auth_cookies, api_token, GOOGLE_SHEETS_CREDS_PATH)
+        rnp_constructor = RnpConstructor(auth_cookies, api_token, config.GOOGLE_SA_CREDS)
         
         range_start = DateFormatter.parse_dot_date(date_from_str)
         range_end = DateFormatter.parse_dot_date(date_to_str)
@@ -24,7 +24,7 @@ class RnpService:
             worksheet_names)    
 
     def fill_range_by_job(self, date_from: date, date_to: date, api_token: str, auth_cookies: WBAuthCookies, spreadsheet_name: str, worksheet_names: list[str]):
-        rnp_constructor = RnpConstructor(auth_cookies, api_token, GOOGLE_SHEETS_CREDS_PATH)
+        rnp_constructor = RnpConstructor(auth_cookies, api_token, config.GOOGLE_SA_CREDS)
         
         rnp_constructor.fill_range(
             date_from, 

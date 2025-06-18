@@ -17,9 +17,9 @@ from .constant import REPORT_FIELDS_ITEMS, TAG_COL_IDX, DATE_ROW_IDX, NM_ID_ROW_
 
 
 class RnpConstructor:
-    def __init__(self, auth_cookies: WBAuthCookies, api_token: str, google_sheets_creds_path: str):
+    def __init__(self, auth_cookies: WBAuthCookies, api_token: str, google_sa_creds: str):
         self.wb_client = WBClient(auth_cookies, api_token)
-        self.gs_client = GoogleSheetsClient(google_sheets_creds_path)
+        self.gs_client = GoogleSheetsClient(google_sa_creds)
         self.adv_extractor = AdvertExtractor()
         self.card_extractor = CardExtractor()
         self.stock_extractor = StockExtractor()

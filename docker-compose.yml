@@ -15,6 +15,7 @@ services:
       - DB_NAME=mp_metrics
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
+      - GOOGLE_SA_CREDS=${GOOGLE_SA_CREDS}
     restart: unless-stopped
   postgres:
     image: postgres:15
