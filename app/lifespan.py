@@ -4,6 +4,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from app.service.rnp.rnp import rnp_service
 from app.repository.db import init_db
+import logging
+
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -13,7 +16,8 @@ async def lifespan(app: FastAPI):
     async def cron_job() -> None:
         await rnp_service.update_all_reports()
     
-    scheduler.add_job(cron_job, CronTrigger.from_crontab('0 0 * * *'))
+    # scheduler.add_job(cron_job, CronTrigger.from_crontab('0 * * * *'))
+    scheduler.add_job(cron_job, CronTrigger.from_crontab('0 * * * *'))
     
     scheduler.start()
     yield

@@ -24,7 +24,7 @@ jobs:
 
             export DB_USER="${{secrets.DB_USER}}";
             export DB_PASSWORD="${{secrets.DB_PASSWORD}}";
-            export GOOGLE_SA_CREDS="${{secrets.GOOGLE_SA_CREDS}}";
+            export GOOGLE_SA_CREDS=${{secrets.GOOGLE_SA_CREDS}};
             
             docker-compose --file docker-compose.yml down;
             docker-compose --file docker-compose.yml rm -f;
